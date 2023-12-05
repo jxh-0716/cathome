@@ -23,6 +23,7 @@ const Router = () => {
                     )
                 })
             }
+            <Route path="*" element={<Admin/>}/>
         </Routes>
     )
 }
