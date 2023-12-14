@@ -1,11 +1,33 @@
 import './index.less'
 import React, { useState } from 'react'
-import { Cascader, Input, Select, Space, Form, Button, Radio } from 'antd';
+import { Cascader, Input, Select, Space, Form, Button, Radio, message } from 'antd';
+import { login,register } from '../../service/user';
+import { useNavigate } from 'react-router-dom';
 const Admin = () => {
     const [form] = Form.useForm();
     const [options, setOptions] = useState(true)
-    const onFinish = (values) => {
+    const navigate = useNavigate()
+    const onFinish = async (values) => {
         console.log('Success:', values);
+        if(options){
+            const res = await login(values)
+            if(res === 'fail'){
+                message.error('用户名或密码错误')
+            }else {
+                message.success('登陆成功')
+                navigate('/shoppingCart')
+                form.resetFields();
+            }
+        }else{
+            const res = await register(values)
+            if(res === 'fail'){
+                message.error('注册失败,用户名已存在')
+            }else {
+                message.success('注册成功')
+                setOptions(!options)
+                form.resetFields();
+            }
+        }
     };
       const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -13,7 +35,7 @@ const Admin = () => {
     const signFormItemArr = [
         {
             label:'用户名',
-            name:'username',
+            name:'name',
             rules:[
                 {
                     required: true,
@@ -35,7 +57,7 @@ const Admin = () => {
     const loginFormItemArr = [
         {
             label:'用户名',
-            name:'username',
+            name:'name',
             rules:[
                 {
                     required: true,
